@@ -20,8 +20,9 @@
 # John DeNero (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/sp09/pacman.html
 import json
-import tkMessageBox
+from tkinter import messagebox
 from multiprocessing import Pool
+from io import StringIO
 
 import requests
 
@@ -255,7 +256,8 @@ class Grid:
 
     def _unpackInt(self, packed, size):
         bools = []
-        if packed < 0: raise ValueError, "must be a positive integer"
+        if packed < 0:
+            raise ValueError("must be a positive integer")
         for i in range(size):
             n = 2 ** (self.CELLS_PER_INT - i - 1)
             if packed >= n:
@@ -426,8 +428,8 @@ class GameStateData:
         for i, state in enumerate(self.agentStates):
             try:
                 int(hash(state))
-            except TypeError, e:
-                print e
+            except TypeError as e:
+                print(e)
                 # hash(state)
         return int((hash(tuple(self.agentStates)) + 13 * hash(self.food) + 113 * hash(tuple(self.capsules)) + 7 * hash(
             self.score)) % 1048575)
@@ -548,8 +550,7 @@ class Game:
         self.totalAgentTimes = [0 for agent in agents]
         self.totalAgentTimeWarnings = [0 for agent in agents]
         self.agentTimeout = False
-        import cStringIO
-        self.agentOutput = [cStringIO.StringIO() for agent in agents]
+        self.agentOutput = [StringIO() for agent in agents]
 
     def getProgress(self):
         if self.gameOver:
@@ -570,7 +571,6 @@ class Game:
     def mute(self, agentIndex):
         if not self.muteAgents: return
         global OLD_STDOUT, OLD_STDERR
-        import cStringIO
         OLD_STDOUT = sys.stdout
         OLD_STDERR = sys.stderr
         sys.stdout = self.agentOutput[agentIndex]
@@ -650,7 +650,7 @@ class Game:
                 agentIndex = myResult[0]
                 try:
                     action = json.loads(myResult[1])
-                except Exception, dat:
+                except Exception as dat:
                     print("Have to choose a random action")
                     action = random.choice(self.state.getLegalActions(agentIndex))
                 # Execute the action
@@ -658,7 +658,7 @@ class Game:
                 if self.catchExceptions:
                     try:
                         self.state = self.state.generateSuccessor(agentIndex, action)
-                    except Exception, data:
+                    except Exception as data:
                         self.mute(agentIndex)
                         self._agentCrash(agentIndex)
                         self.unmute()
@@ -689,16 +689,16 @@ class Game:
                     self.mute(agentIndex)
                     agent.final(self.state)
                     self.unmute()
-                except Exception, data:
+                except Exception as data:
                     if not self.catchExceptions: raise
                     self._agentCrash(agentIndex)
                     self.unmute()
                     return
         score = self.state.data.score
         if score == 0:
-            tkMessageBox.showinfo("No Winner", "There is no Winner")
+            messagebox.showinfo("No Winner", "There is no Winner")
         if score > 0:
-            tkMessageBox.showinfo("Red Wins", "Team Blue wins with score: " + str(score))
+            messagebox.showinfo("Red Wins", "Team Blue wins with score: " + str(score))
         if score < 0:
-            tkMessageBox.showinfo("Blue Wins", "Team Blue wins with score: " + str(score * -1))
+            messagebox.showinfo("Blue Wins", "Team Blue wins with score: " + str(score * -1))
         self.display.finish()

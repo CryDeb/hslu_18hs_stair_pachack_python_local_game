@@ -48,17 +48,17 @@ The keys are
   P1: 'a', 's', 'd', and 'w' to move
   P2: 'l', ';', ',' and 'p' to move
 """
-import json
+import random
+import sys
+import util
 
-from game import GameStateData, AgentState
-from game import Game
 from game import Actions
-from util import nearestPoint
-from util import manhattanDistance
-from game import Grid
 from game import Configuration
-import sys, util, random, imp
-import keyboardAgents
+from game import Game
+from game import GameStateData
+from game import Grid
+from util import manhattanDistance
+from util import nearestPoint
 
 # If you change these, you won't affect the server, so you can't cheat
 KILL_POINTS = 0
@@ -335,9 +335,9 @@ def halfGrid(grid, red):
     halfway = grid.width / 2
     halfgrid = Grid(grid.width, grid.height, False)
     if red:
-        xrange = range(halfway)
+        xrange = range(int(halfway))
     else:
-        xrange = range(halfway, grid.width)
+        xrange = range(int(halfway), int(grid.width))
 
     for y in range(grid.height):
         for x in xrange:
@@ -413,17 +413,17 @@ class CaptureRules:
                         blueCount += agentState.numReturned
 
                 if blueCount >= foodToWin:  # state.getRedFood().count() == MIN_FOOD:
-                    print 'The Blue team has returned at least %d of the opponents\' dots.' % foodToWin
+                    print('The Blue team has returned at least %d of the opponents\' dots.' % foodToWin)
                 elif redCount >= foodToWin:  # state.getBlueFood().count() == MIN_FOOD:
-                    print 'The Red team has returned at least %d of the opponents\' dots.' % foodToWin
+                    print('The Red team has returned at least %d of the opponents\' dots.' % foodToWin)
                 else:  # if state.getBlueFood().count() > MIN_FOOD and state.getRedFood().count() > MIN_FOOD:
-                    print 'Time is up.'
+                    print('Time is up.')
                     if state.data.score == 0:
-                        print 'Tie game!'
+                        print('Tie game!')
                     else:
                         winner = 'Red'
                         if state.data.score < 0: winner = 'Blue'
-                        print 'The %s team wins by %d points.' % (winner, abs(state.data.score))
+                        print('The %s team wins by %d points.' % (winner, abs(state.data.score)))
 
     def getProgress(self, game):
         blue = 1.0 - (game.state.getBlueFood().count() / float(self._initBlueFood))
@@ -435,10 +435,10 @@ class CaptureRules:
 
     def agentCrash(self, game, agentIndex):
         if agentIndex % 2 == 0:
-            print >> sys.stderr, "Red agent crashed"
+            print("Red agent crashed", file=sys.stderr)
             game.state.data.score = -1
         else:
-            print >> sys.stderr, "Blue agent crashed"
+            print("Blue agent crashed", file=sys.stderr)
             game.state.data.score = 1
 
     def getMaxTotalTime(self, agentIndex):
@@ -880,7 +880,7 @@ def readCommand(argv):
 
     # Special case: recorded games don't use the runGames method or args structure
     if options.replay != None:
-        print 'Replaying recorded game %s.' % options.replay
+        print('Replaying recorded game %s.' % options.replay)
         import cPickle
         recorded = cPickle.load(open(options.replay))
         recorded['display'] = args['display']
@@ -892,8 +892,8 @@ def readCommand(argv):
     # if options.numTraining > 0:
     #     redArgs['numTraining'] = options.numTraining
     #     blueArgs['numTraining'] = options.numTraining
-    redAgents = loadAgents(True, options.red)
-    blueAgents = loadAgents(False, options.blue)
+    redAgents = loadAgents(True)
+    blueAgents = loadAgents(False)
 
     args['agents'] = sum([list(el) for el in zip(redAgents, blueAgents)], [])  # list of agents
     #
@@ -946,6 +946,7 @@ def randomLayout(seed=None):
 
 def loadAgents(isRed, addresses=["https://ch-hslu-stair-pachack-java.herokuapp.com"]):
     "Calls agent factories and returns lists of agents"
+    print(addresses)
     numOfAgents = len(addresses)
     # if not factory.endswith(".py"):
     #     factory += ".py"
@@ -963,7 +964,7 @@ def loadAgents(isRed, addresses=["https://ch-hslu-stair-pachack-java.herokuapp.c
     if not isRed:
         indexAddend = 1
     indices = [2 * i + indexAddend for i in range(numOfAgents)]
-    return createTeamFunc(indices, isRed, **args)
+    return createTeamFunc(indices, **args)
 
     # try:
     #     if not factory.endswith(".py"):
@@ -1014,7 +1015,7 @@ def runGames(layouts, agents, display, length, numGames, record, numTraining, re
     games = []
 
     if numTraining > 0:
-        print 'Playing %d training games' % numTraining
+        print("Playing %d training games" % numTraining)
 
     for i in range(numGames):
         beQuiet = i < numTraining
@@ -1033,13 +1034,13 @@ def runGames(layouts, agents, display, length, numGames, record, numTraining, re
 
         g.record = None
         if record:
-            import time, cPickle, game
+            import cPickle, game
             # fname = ('recorded-game-%d' % (i + 1)) +  '-'.join([str(t) for t in time.localtime()[1:6]])
             # f = file(fname, 'w')
             components = {'layout': layout, 'agents': [game.Agent() for a in agents], 'actions': g.moveHistory,
                           'length': length, 'redTeamName': redTeamName, 'blueTeamName': blueTeamName}
             # f.close()
-            print "recorded"
+            print("recorded")
             g.record = cPickle.dumps(components)
             with open('replay-%d' % i, 'wb') as f:
                 f.write(g.record)
@@ -1048,18 +1049,17 @@ def runGames(layouts, agents, display, length, numGames, record, numTraining, re
         scores = [game.state.data.score for game in games]
         redWinRate = [s > 0 for s in scores].count(True) / float(len(scores))
         blueWinRate = [s < 0 for s in scores].count(True) / float(len(scores))
-        print 'Average Score:', sum(scores) / float(len(scores))
-        print 'Scores:       ', ', '.join([str(score) for score in scores])
-        print 'Red Win Rate:  %d/%d (%.2f)' % ([s > 0 for s in scores].count(True), len(scores), redWinRate)
-        print 'Blue Win Rate: %d/%d (%.2f)' % ([s < 0 for s in scores].count(True), len(scores), blueWinRate)
-        print 'Record:       ', ', '.join([('Blue', 'Tie', 'Red')[max(0, min(2, 1 + s))] for s in scores])
+        print('Average Score:', sum(scores) / float(len(scores)))
+        print('Scores:       ', ', '.join([str(score) for score in scores]))
+        print('Red Win Rate:  %d/%d (%.2f)' % ([s > 0 for s in scores].count(True), len(scores), redWinRate))
+        print('Blue Win Rate: %d/%d (%.2f)' % ([s < 0 for s in scores].count(True), len(scores), blueWinRate))
+        print('Record:       ', ', '.join([('Blue', 'Tie', 'Red')[max(0, min(2, 1 + s))] for s in scores]))
     return games
 
 
 def save_score(game):
     with open('score', 'w') as f:
-        print >> f, game.state.data.score
-
+        print(game.state.data.score, end="", file=f)
 
 if __name__ == '__main__':
     """

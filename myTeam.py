@@ -20,8 +20,7 @@ import game
 # Team creation #
 #################
 
-def createTeam(indices,  isRed,
-               name = ['DummyAgent', 'DummyAgent'], ipAddresses=["http://127.0.0.1:8080", "http://127.0.0.1:8080"]):
+def createTeam(indices,  name = ['DummyAgent', 'DummyAgent'], ipAddresses=["http://127.0.0.1:8080", "http://127.0.0.1:8080"]):
   """
   This function should return a list of two agents that will form the
   team, initialized using firstIndex and secondIndex as their agent
@@ -36,7 +35,11 @@ def createTeam(indices,  isRed,
   any extra arguments, so you should make sure that the default
   behavior is what you want for the nightly contest.
   """
-
+  print("Indices")
+  print(len(indices))
+  print("Names")
+  print(name)
+  print(len(ipAddresses))
   # The following line is an example only; feel free to change it.
   return [eval(name[index])(indices[index], ipAddresses[index]) for index in range(len(indices))]
 
