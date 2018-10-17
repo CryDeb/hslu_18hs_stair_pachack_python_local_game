@@ -1,0 +1,5 @@
+exe/
+
+*.pyc
+venv/
+venv27-15/

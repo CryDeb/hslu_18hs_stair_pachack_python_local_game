@@ -48,6 +48,8 @@ The keys are
   P1: 'a', 's', 'd', and 'w' to move
   P2: 'l', ';', ',' and 'p' to move
 """
+import configparser
+import multiprocessing
 import random
 import sys
 import util
@@ -485,7 +487,7 @@ class AgentRules:
         legal = AgentRules.getLegalActions(state, agentIndex)
         if action not in legal:
             action = legal[0]
-            #raise Exception("Illegal action " + str(action))
+            # raise Exception("Illegal action " + str(action))
 
         # Update Configuration
         agentState = state.data.agentStates[agentIndex]
@@ -891,13 +893,18 @@ def readCommand(argv):
     # redArgs, blueArgs = parseAgentArgs(options.redOpts), parseAgentArgs(options.blueOpts)
     # if options.numTraining > 0:
     #     redArgs['numTraining'] = options.numTraining
-    #     blueArgs['numTraining'] = options.numTraining
-    redAgents = loadAgents(True)
-    blueAgents = loadAgents(False)
+    #     blueArgs['numTraining'] = options.numTraining+
+    config = configparser.ConfigParser()
+    config.read("websites.ini")
+    redAddresses = config.get("RedTeam", "members").split("\n")
+    blueAddresses = config.get("BlueTeam", "members").split("\n")
+
+    redAgents = loadAgents(True, redAddresses)
+    blueAgents = loadAgents(False, blueAddresses)
 
     args['agents'] = sum([list(el) for el in zip(redAgents, blueAgents)], [])  # list of agents
     #
-    #numKeyboardAgents = 0
+    # numKeyboardAgents = 0
     # for index, val in enumerate([options.keys0, options.keys1, options.keys2, options.keys3]):
     #     if not val: continue
     #     if numKeyboardAgents == 0:
@@ -944,15 +951,13 @@ def randomLayout(seed=None):
     return mazeGenerator.generateMaze(seed)
 
 
-def loadAgents(isRed, addresses=["https://ch-hslu-stair-pachack-java.herokuapp.com"]):
+def loadAgents(isRed, addresses=[]):
     "Calls agent factories and returns lists of agents"
-    print(addresses)
     numOfAgents = len(addresses)
     # if not factory.endswith(".py"):
     #     factory += ".py"
     # module = imp.load_source('player' + str(int(isRed)), factory)
     # createTeamFunc = getattr(module, 'createTeam')
-
 
     from myTeam import createTeam
     createTeamFunc = createTeam
@@ -1061,7 +1066,9 @@ def save_score(game):
     with open('score', 'w') as f:
         print(game.state.data.score, end="", file=f)
 
+
 if __name__ == '__main__':
+    multiprocessing.freeze_support()
     """
   The main function called when pacman.py is run
   from the command line:

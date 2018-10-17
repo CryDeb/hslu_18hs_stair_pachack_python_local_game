@@ -35,11 +35,6 @@ def createTeam(indices,  name = ['DummyAgent', 'DummyAgent'], ipAddresses=["http
   any extra arguments, so you should make sure that the default
   behavior is what you want for the nightly contest.
   """
-  print("Indices")
-  print(len(indices))
-  print("Names")
-  print(name)
-  print(len(ipAddresses))
   # The following line is an example only; feel free to change it.
   return [eval(name[index])(indices[index], ipAddresses[index]) for index in range(len(indices))]
 

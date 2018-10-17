@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/capture.py" line="1054" mnemonic="8" />
+    <bookmark url="file://$PROJECT_DIR$/capture.py" line="1059" mnemonic="8" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bee8004f-fa1e-4a7e-ab90-1ccdaefe1570" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/capture.py" beforeDir="false" afterPath="$PROJECT_DIR$/capture.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/captureGraphicsDisplay.py" beforeDir="false" afterPath="$PROJECT_DIR$/captureGraphicsDisplay.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/game.py" beforeDir="false" afterPath="$PROJECT_DIR$/game.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/graphicsUtils.py" beforeDir="false" afterPath="$PROJECT_DIR$/graphicsUtils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mazeGenerator.py" beforeDir="false" afterPath="$PROJECT_DIR$/mazeGenerator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/capture.spec" beforeDir="false" afterPath="$PROJECT_DIR$/capture.spec" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/myTeam.py" beforeDir="false" afterPath="$PROJECT_DIR$/myTeam.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/util.py" beforeDir="false" afterPath="$PROJECT_DIR$/util.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/score" beforeDir="false" afterPath="$PROJECT_DIR$/score" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -46,30 +44,30 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="Python Console" value="328" />
+          <entry key="Python Console" value="384" />
           <entry key="dummy" value="23" />
-          <entry key="py" value="10473" />
+          <entry key="py" value="10902" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="PLAIN_TEXT" value="23" />
-          <entry key="Python" value="10801" />
+          <entry key="Python" value="11286" />
         </counts>
       </usages-collector>
     </session>
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/capture.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="962" column="19" lean-forward="true" selection-start-line="962" selection-start-column="19" selection-end-line="962" selection-end-column="19" />
+            <state relative-caret-position="102">
+              <caret line="882" column="25" selection-start-line="882" selection-start-column="25" selection-end-line="882" selection-end-column="25" />
               <folding>
-                <element signature="e#2326#2339#0" expanded="true" />
+                <element signature="e#2326#2345#0" expanded="true" />
                 <element signature="e#32349#32374#0" />
-                <marker date="1539757782993" expanded="true" signature="16064:16070" ph="..." />
+                <marker date="1539762185126" expanded="true" signature="16107:16113" ph="..." />
               </folding>
             </state>
           </provider>
@@ -87,8 +85,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/myTeam.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="487">
-              <caret line="40" column="12" selection-start-line="40" selection-start-column="12" selection-end-line="40" selection-end-column="12" />
+            <state relative-caret-position="221">
+              <caret line="43" selection-start-line="43" selection-end-line="43" />
               <folding>
                 <element signature="e#648#680#0" expanded="true" />
               </folding>
@@ -109,7 +107,7 @@
         <entry file="file://$PROJECT_DIR$/game.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="436">
-              <caret line="557" column="13" lean-forward="true" selection-start-line="557" selection-start-column="13" selection-end-line="557" selection-end-column="13" />
+              <caret line="557" column="13" selection-start-line="557" selection-start-column="13" selection-end-line="557" selection-end-column="13" />
               <folding>
                 <element signature="e#1050#1061#0" expanded="true" />
                 <marker date="1539757645277" expanded="true" signature="16248:16250" ph="..." />
@@ -137,11 +135,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/graphicsUtils.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="282">
-              <caret line="301" column="15" lean-forward="true" selection-start-line="301" selection-start-column="15" selection-end-line="301" selection-end-column="15" />
+            <state relative-caret-position="588">
+              <caret line="343" column="38" selection-start-line="343" selection-start-column="38" selection-end-line="343" selection-end-column="38" />
               <folding>
                 <element signature="e#664#674#0" expanded="true" />
               </folding>
@@ -232,11 +230,11 @@
         <option value="$PROJECT_DIR$/captureAgents.py" />
         <option value="$PROJECT_DIR$/util.py" />
         <option value="$PROJECT_DIR$/captureGraphicsDisplay.py" />
-        <option value="$PROJECT_DIR$/myTeam.py" />
         <option value="$PROJECT_DIR$/mazeGenerator.py" />
         <option value="$PROJECT_DIR$/game.py" />
-        <option value="$PROJECT_DIR$/capture.py" />
         <option value="$PROJECT_DIR$/graphicsUtils.py" />
+        <option value="$PROJECT_DIR$/myTeam.py" />
+        <option value="$PROJECT_DIR$/capture.py" />
       </list>
     </option>
   </component>
@@ -423,15 +421,15 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32961586" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.76679343" visible="true" weight="0.23704414" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.7661597" visible="true" weight="0.23704414" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49873257" weight="0.39731285" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Terminal" order="8" weight="0.3283767" />
-      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.23320659" side_tool="true" visible="true" weight="0.23704414" />
-      <window_info anchor="bottom" id="Python Console" order="10" sideWeight="0.49873257" weight="0.32917467" />
+      <window_info anchor="bottom" id="Terminal" order="8" sideWeight="0.49936628" weight="0.32821497" />
+      <window_info anchor="bottom" id="Event Log" order="9" sideWeight="0.2338403" side_tool="true" visible="true" weight="0.23704414" />
+      <window_info anchor="bottom" id="Python Console" order="10" sideWeight="0.49746513" weight="0.32917467" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -545,7 +543,7 @@
     <entry file="file://$PROJECT_DIR$/game.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="436">
-          <caret line="557" column="13" lean-forward="true" selection-start-line="557" selection-start-column="13" selection-end-line="557" selection-end-column="13" />
+          <caret line="557" column="13" selection-start-line="557" selection-start-column="13" selection-end-line="557" selection-end-column="13" />
           <folding>
             <element signature="e#1050#1061#0" expanded="true" />
             <marker date="1539757645277" expanded="true" signature="16248:16250" ph="..." />
@@ -554,10 +552,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/graphicsUtils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="588">
+          <caret line="343" column="38" selection-start-line="343" selection-start-column="38" selection-end-line="343" selection-end-column="38" />
+          <folding>
+            <element signature="e#664#674#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/myTeam.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="487">
-          <caret line="40" column="12" selection-start-line="40" selection-start-column="12" selection-end-line="40" selection-end-column="12" />
+        <state relative-caret-position="221">
+          <caret line="43" selection-start-line="43" selection-end-line="43" />
           <folding>
             <element signature="e#648#680#0" expanded="true" />
           </folding>
@@ -573,22 +581,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/capture.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="962" column="19" lean-forward="true" selection-start-line="962" selection-start-column="19" selection-end-line="962" selection-end-column="19" />
+        <state relative-caret-position="102">
+          <caret line="882" column="25" selection-start-line="882" selection-start-column="25" selection-end-line="882" selection-end-column="25" />
           <folding>
-            <element signature="e#2326#2339#0" expanded="true" />
+            <element signature="e#2326#2345#0" expanded="true" />
             <element signature="e#32349#32374#0" />
-            <marker date="1539757782993" expanded="true" signature="16064:16070" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/graphicsUtils.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="282">
-          <caret line="301" column="15" lean-forward="true" selection-start-line="301" selection-start-column="15" selection-end-line="301" selection-end-column="15" />
-          <folding>
-            <element signature="e#664#674#0" expanded="true" />
+            <marker date="1539762185126" expanded="true" signature="16107:16113" ph="..." />
           </folding>
         </state>
       </provider>
