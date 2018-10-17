@@ -27,8 +27,11 @@ import configparser
 import multiprocessing
 import random
 import sys
+
+import mazeGenerator
 import util
 import captureGraphicsDisplay
+import layout
 
 from game import Actions
 from game import Configuration
@@ -37,6 +40,7 @@ from game import GameStateData
 from game import Grid
 from util import manhattanDistance
 from util import nearestPoint
+from myTeam import createTeam
 
 # If you change these, you won't affect the server, so you can't cheat
 KILL_POINTS = 0
@@ -750,23 +754,23 @@ def readCommand(argv):
 
     args['agents'] = sum([list(el) for el in zip(redAgents, blueAgents)], [])  # list of agents
 
-    import layout
     layouts = []
     for i in range(config.getint("Settings", "numGames")):
-        l = layout.Layout(randomLayout().split('\n'))
+        rand = randomLayout().split('\n')
+        l = layout.Layout(rand)
         layouts.append(l)
 
     args['layouts'] = layouts
     args['length'] = config.getint("Settings", "maxMoves")
     args['numGames'] = config.getint("Settings", "numGames")
     args['catchExceptions'] = config.getboolean("Settings", "catchException")
+
     return args
 
 
 def randomLayout(seed=None):
     if not seed:
         seed = random.randint(0, 99999999)
-    import mazeGenerator
     return mazeGenerator.generateMaze(seed)
 
 
@@ -774,7 +778,6 @@ def loadAgents(isRed, addresses=[]):
     "Calls agent factories and returns lists of agents"
     numOfAgents = len(addresses)
 
-    from myTeam import createTeam
     createTeamFunc = createTeam
 
     args = dict()
@@ -818,8 +821,6 @@ def save_score(game):
 
 if __name__ == '__main__':
     multiprocessing.freeze_support()  # needed for windows with pyinstaller
-
     options = readCommand(sys.argv[1:])  # Get game components based on input
     games = runGames(**options)
-
     save_score(games[0])

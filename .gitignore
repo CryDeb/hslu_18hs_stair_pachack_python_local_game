@@ -3,3 +3,4 @@ exe/
 *.pyc
 venv/
 venv27-15/
+__pycache__/

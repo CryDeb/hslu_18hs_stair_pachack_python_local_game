@@ -587,11 +587,10 @@ class Game:
         """
         Main control loop for game play.
         """
+        self.inform_agent_about_start()
         self.display.initialize(self.state.data)
         self.numMoves = 0
 
-        ###self.display.initialize(self.state.makeObservation(1).data)
-        # inform learning agents of the game start
         for i in range(len(self.agents)):
             agent = self.agents[i]
             if not agent:
@@ -602,31 +601,6 @@ class Game:
                 self.unmute()
                 self._agentCrash(i, quiet=True)
                 return
-            # if ("registerInitialState" in dir(agent)):
-            #     self.mute(i)
-            #     if self.catchExceptions:
-            #         try:
-            #             timed_func = TimeoutFunction(agent.registerInitialState, int(self.rules.getMaxStartupTime(i)))
-            #             try:
-            #                 start_time = time.time()
-            #                 timed_func(self.state.deepCopy())
-            #                 time_taken = time.time() - start_time
-            #                 self.totalAgentTimes[i] += time_taken
-            #             except TimeoutFunctionException:
-            #                 print >> sys.stderr, "Agent %d ran out of time on startup!" % i
-            #                 self.unmute()
-            #                 self.agentTimeout = True
-            #                 self._agentCrash(i, quiet=True)
-            #                 return
-            #         except Exception, data:
-            #             self._agentCrash(i, quiet=False)
-            #             self.unmute()
-            #             return
-            #     else:
-            #         agent.registerInitialState(self.state.deepCopy())
-            #     ## TODO: could this exceed the total time
-            #     self.unmute()
-
         agentIndex = self.startingIndex
         numAgents = len(self.agents)
 
@@ -641,6 +615,8 @@ class Game:
             # observation = self.state.deepCopy()
 
             # Solicit an action
+
+
             action = None
             self.mute(agentIndex)
             gameStateDTO = PublicGameState(self.state.deepCopy())
@@ -702,3 +678,13 @@ class Game:
         if score < 0:
             messagebox.showinfo("Blue Wins", "Team Blue wins with score: " + str(score * -1))
         self.display.finish()
+
+    def inform_agent_about_start(self):
+        for agent in self.agents:
+            result = requests.post(str(agent.ip_address + "/start"), headers={'Content-type': "text/plain"},
+                                   data=str(""))
+            if(result.text != ""):
+                if(agent.index in self.state.getRedTeamIndices()):
+                    self.display.redTeam = result.text
+                else:
+                    self.display.blueTeam = result.text
