@@ -178,7 +178,7 @@ class InfoPane:
 
 
 class PacmanGraphics:
-    def __init__(self, redTeam, blueTeam, zoom=1.0, frameTime=0.0, capture=False):
+    def __init__(self, zoom=1.0, frameTime=0, capture=False):
         self.expandedCells = []
         self.have_window = 0
         self.currentGhostImages = {}
@@ -187,8 +187,8 @@ class PacmanGraphics:
         self.gridSize = DEFAULT_GRID_SIZE * zoom
         self.capture = capture
         self.frameTime = frameTime
-        self.redTeam = redTeam
-        self.blueTeam = blueTeam
+        self.redTeam = "RedTeam"
+        self.blueTeam = "BlueTeam"
 
     def initialize(self, state, isBlue=False):
         self.isBlue = isBlue

@@ -10,6 +10,9 @@
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
 # Student side autograding was added by Brad Miller, Nick Hay, and
 # Pieter Abbeel (pabbeel@cs.berkeley.edu).
+#
+# Upgrading to python3 by Dane Wicki University of Applied Science Luzern
+# Implementing of REST call by Dane Wicki University of Applied Science Luzern
 
 
 # capture.py
@@ -20,39 +23,12 @@
 # John DeNero (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
 # For more info, see http://inst.eecs.berkeley.edu/~cs188/sp09/pacman.html
 
-"""
-Capture.py holds the logic for Pacman capture the flag.
-
-  (i)  Your interface to the pacman world:
-          Pacman is a complex environment.  You probably don't want to
-          read through all of the code we wrote to make the game runs
-          correctly.  This section contains the parts of the code
-          that you will need to understand in order to complete the
-          project.  There is also some code in game.py that you should
-          understand.
-
-  (ii)  The hidden secrets of pacman:
-          This section contains all of the logic code that the pacman
-          environment uses to decide who can move where, who dies when
-          things collide, etc.  You shouldn't need to read this section
-          of code, but you can if you want.
-
-  (iii) Framework to start a game:
-          The final section contains the code for reading the command
-          you use to set up the game, then starting up a new game, along with
-          linking in all the external parts (agent functions, graphics).
-          Check this section out to see all the options available to you.
-
-To play your first game, type 'python capture.py' from the command line.
-The keys are
-  P1: 'a', 's', 'd', and 'w' to move
-  P2: 'l', ';', ',' and 'p' to move
-"""
 import configparser
 import multiprocessing
 import random
 import sys
 import util
+import captureGraphicsDisplay
 
 from game import Actions
 from game import Configuration
@@ -377,13 +353,12 @@ class CaptureRules:
     def __init__(self, quiet=False):
         self.quiet = quiet
 
-    def newGame(self, layout, agents, display, length, muteAgents, catchExceptions):
+    def newGame(self, layout, agents, display, length, catchExceptions):
         initState = GameState()
         initState.initialize(layout, len(agents))
         starter = random.randint(0, 1)
         print('%s team starts' % ['Red', 'Blue'][starter])
-        game = Game(agents, display, self, startingIndex=starter, muteAgents=muteAgents,
-                    catchExceptions=catchExceptions)
+        game = Game(agents, display, self, startingIndex=starter, catchExceptions=catchExceptions)
         game.state = initState
         game.length = length
         game.state.data.timeleft = length
@@ -758,144 +733,15 @@ class AgentRules:
 # FRAMEWORK TO START A GAME #
 #############################
 
-def default(str):
-    return str + ' [Default: %default]'
-
-
-def parseAgentArgs(str):
-    if str == None or str == '': return {}
-    pieces = str.split(',')
-    opts = {}
-    for p in pieces:
-        if '=' in p:
-            key, val = p.split('=')
-        else:
-            key, val = p, 1
-        opts[key] = val
-    return opts
-
-
 def readCommand(argv):
-    """
-  Processes the command used to run pacman from the command line.
-  """
-    from optparse import OptionParser
-    usageStr = """
-  USAGE:      python pacman.py <options>
-  EXAMPLES:   (1) python capture.py
-                  - starts a game with two baseline agents
-              (2) python capture.py --keys0
-                  - starts a two-player interactive game where the arrow keys control agent 0, and all other agents are baseline agents
-              (3) python capture.py -r baselineTeam -b myTeam
-                  - starts a fully automated game where the red team is a baseline team and blue team is myTeam
-  """
-    parser = OptionParser(usageStr)
+    config = configparser.ConfigParser()
+    config.read("settings.ini")
 
-    parser.add_option('-r', '--red', help=default('Red team'),
-                      default='myTeam')
-    parser.add_option('-b', '--blue', help=default('Blue team'),
-                      default='myTeam')
-    parser.add_option('--red-name', help=default('Red team name'),
-                      default='Red')
-    parser.add_option('--blue-name', help=default('Blue team name'),
-                      default='Blue')
-    parser.add_option('--redOpts', help=default('Options for red team (e.g. first=keys)'),
-                      default='')
-    parser.add_option('--blueOpts', help=default('Options for blue team (e.g. first=keys)'),
-                      default='')
-    parser.add_option('--keys0', help='Make agent 0 (first red player) a keyboard agent', action='store_true',
-                      default=False)
-    parser.add_option('--keys1', help='Make agent 1 (second red player) a keyboard agent', action='store_true',
-                      default=False)
-    parser.add_option('--keys2', help='Make agent 2 (first blue player) a keyboard agent', action='store_true',
-                      default=False)
-    parser.add_option('--keys3', help='Make agent 3 (second blue player) a keyboard agent', action='store_true',
-                      default=False)
-    parser.add_option('-l', '--layout', dest='layout',
-                      help=default(
-                          'the LAYOUT_FILE from which to load the map layout; use RANDOM for a random maze; use RANDOM<seed> to use a specified random seed, e.g., RANDOM23'),
-                      metavar='LAYOUT_FILE', default='defaultCapture')
-    parser.add_option('-t', '--textgraphics', action='store_true', dest='textgraphics',
-                      help='Display output as text only', default=False)
-
-    parser.add_option('-q', '--quiet', action='store_true',
-                      help='Display minimal output and no graphics', default=False)
-
-    parser.add_option('-Q', '--super-quiet', action='store_true', dest="super_quiet",
-                      help='Same as -q but agent output is also suppressed', default=False)
-
-    parser.add_option('-z', '--zoom', type='float', dest='zoom',
-                      help=default('Zoom in the graphics'), default=1)
-    parser.add_option('-i', '--time', type='int', dest='time',
-                      help=default('TIME limit of a game in moves'), default=1200, metavar='TIME')
-    parser.add_option('-n', '--numGames', type='int',
-                      help=default('Number of games to play'), default=1)
-    parser.add_option('-f', '--fixRandomSeed', action='store_true',
-                      help='Fixes the random seed to always play the same game', default=False)
-    parser.add_option('--record', action='store_true',
-                      help='Writes game histories to a file (named by the time they were played)', default=False)
-    parser.add_option('--replay', default=None,
-                      help='Replays a recorded game file.')
-    parser.add_option('-x', '--numTraining', dest='numTraining', type='int',
-                      help=default('How many episodes are training (suppresses output)'), default=0)
-    parser.add_option('-c', '--catchExceptions', action='store_true', default=False,
-                      help='Catch exceptions and enforce time limits')
-
-    options, otherjunk = parser.parse_args(argv)
-    assert len(otherjunk) == 0, "Unrecognized options: " + str(otherjunk)
     args = dict()
 
-    # Choose a display format
-    # if options.pygame:
-    #   import pygameDisplay
-    #    args['display'] = pygameDisplay.PacmanGraphics()
-    # if options.textgraphics:
-    #     import textDisplay
-    #     args['display'] = textDisplay.PacmanGraphics()
-    # elif options.quiet:
-    #     import textDisplay
-    #     args['display'] = textDisplay.NullGraphics()
-    # elif options.super_quiet:
-    #     import textDisplay
-    #     args['display'] = textDisplay.NullGraphics()
-    #     args['muteAgents'] = True
-    # else:
-    #     import captureGraphicsDisplay
-    #     # Hack for agents writing to the display
-    #     captureGraphicsDisplay.FRAME_TIME = 0
-    #     args['display'] = captureGraphicsDisplay.PacmanGraphics(options.red, options.blue, options.zoom, 0,
-    #                                                             capture=True)
-    #     import __main__
-    #     __main__.__dict__['_display'] = args['display']
-
-    import captureGraphicsDisplay
     captureGraphicsDisplay.FRAME_TIME = 0
-    args['display'] = captureGraphicsDisplay.PacmanGraphics(options.red, options.blue, options.zoom, 0,
-                                                            capture=True)
-    # import __main__
-    # __main__.__dict__['_display'] = args['display']
+    args['display'] = captureGraphicsDisplay.PacmanGraphics(config.getfloat("Settings", "zoomfactor"), 0, True)
 
-    args['redTeamName'] = options.red_name
-    args['blueTeamName'] = options.blue_name
-
-    if options.fixRandomSeed: random.seed('cs188')
-
-    # Special case: recorded games don't use the runGames method or args structure
-    if options.replay != None:
-        print('Replaying recorded game %s.' % options.replay)
-        import cPickle
-        recorded = cPickle.load(open(options.replay))
-        recorded['display'] = args['display']
-        replayGame(**recorded)
-        sys.exit(0)
-
-    # Choose a pacman agent
-    # redArgs, blueArgs = parseAgentArgs(options.redOpts), parseAgentArgs(options.blueOpts)
-    # if options.numTraining > 0:
-    #     redArgs['numTraining'] = options.numTraining
-    #     blueArgs['numTraining'] = options.numTraining+
-    config = configparser.ConfigParser()
-    config.read("websites.ini")
     redAddresses = config.get("RedTeam", "members").split("\n")
     blueAddresses = config.get("BlueTeam", "members").split("\n")
 
@@ -903,50 +749,23 @@ def readCommand(argv):
     blueAgents = loadAgents(False, blueAddresses)
 
     args['agents'] = sum([list(el) for el in zip(redAgents, blueAgents)], [])  # list of agents
-    #
-    # numKeyboardAgents = 0
-    # for index, val in enumerate([options.keys0, options.keys1, options.keys2, options.keys3]):
-    #     if not val: continue
-    #     if numKeyboardAgents == 0:
-    #         agent = keyboardAgents.KeyboardAgent(index)
-    #     elif numKeyboardAgents == 1:
-    #         agent = keyboardAgents.KeyboardAgent2(index)
-    #     else:
-    #         raise Exception('Max of two keyboard agents supported')
-    #     numKeyboardAgents += 1
-    #     args['agents'][index] = agent
 
-    # Choose a layout
     import layout
     layouts = []
-    for i in range(options.numGames):
+    for i in range(config.getint("Settings", "numGames")):
         l = layout.Layout(randomLayout().split('\n'))
         layouts.append(l)
-        # if options.layout == 'RANDOM':
-        #     l = layout.Layout(randomLayout().split('\n'))
-        # elif options.layout.startswith('RANDOM'):
-        #     l = layout.Layout(randomLayout(int(options.layout[6:])).split('\n'))
-        # elif options.layout.lower().find('capture') == -1:
-        #     raise Exception('You must use a capture layout with capture.py')
-        # else:
-        #     l = layout.getLayout(options.layout)
-        # if l == None: raise Exception("The layout " + options.layout + " cannot be found")
-        # layouts.append(l)
 
     args['layouts'] = layouts
-    args['length'] = options.time
-    args['numGames'] = options.numGames
-    args['numTraining'] = options.numTraining
-    args['record'] = options.record
-    args['catchExceptions'] = options.catchExceptions
+    args['length'] = config.getint("Settings", "maxMoves")
+    args['numGames'] = config.getint("Settings", "numGames")
+    args['catchExceptions'] = config.getboolean("Settings", "catchException")
     return args
 
 
 def randomLayout(seed=None):
     if not seed:
         seed = random.randint(0, 99999999)
-    # layout = 'layouts/random%08dCapture.lay' % seed
-    # print 'Generating random layout in %s' % layout
     import mazeGenerator
     return mazeGenerator.generateMaze(seed)
 
@@ -954,10 +773,6 @@ def randomLayout(seed=None):
 def loadAgents(isRed, addresses=[]):
     "Calls agent factories and returns lists of agents"
     numOfAgents = len(addresses)
-    # if not factory.endswith(".py"):
-    #     factory += ".py"
-    # module = imp.load_source('player' + str(int(isRed)), factory)
-    # createTeamFunc = getattr(module, 'createTeam')
 
     from myTeam import createTeam
     createTeamFunc = createTeam
@@ -971,84 +786,17 @@ def loadAgents(isRed, addresses=[]):
     indices = [2 * i + indexAddend for i in range(numOfAgents)]
     return createTeamFunc(indices, **args)
 
-    # try:
-    #     if not factory.endswith(".py"):
-    #         factory += ".py"
-    #
-    #     module = imp.load_source('player' + str(int(isRed)), factory)
-    # except (NameError, ImportError):
-    #     print >> sys.stderr, 'Error: The team "' + factory + '" could not be loaded! '
-    #     traceback.print_exc()
-    #     return [None for i in range(numOfAgents)]
-    # if textgraphics and factoryClassName.startswith('Keyboard'):
-    #   raise Exception('Using the keyboard requires graphics (no text display, quiet or training games)')
-    # try:
-    #     createTeamFunc = getattr(module, 'createTeam')
-    # except AttributeError:
-    #     print >> sys.stderr, 'Error: The team "' + factory + '" could not be loaded! '
-    #     traceback.print_exc()
-    #     return [None for i in range(2)]
-    # indexAddend = 0
-    # if not isRed:
-    #     indexAddend = 1
-    # indices = [2 * i + indexAddend for i in range(numOfAgents)]
-    # return createTeamFunc(indices, isRed, **args)
-
-
-def replayGame(layout, agents, actions, display, length, redTeamName, blueTeamName):
-    rules = CaptureRules()
-    game = rules.newGame(layout, agents, display, length, False, False)
-    state = game.state
-    display.redTeam = redTeamName
-    display.blueTeam = blueTeamName
-    display.initialize(state.data)
-
-    for action in actions:
-        # Execute the action
-        state = state.generateSuccessor(*action)
-        # Change the display
-        display.update(state.data)
-        # Allow for game specific conditions (winning, losing, etc.)
-        rules.process(state, game)
-
-    display.finish()
-
-
-def runGames(layouts, agents, display, length, numGames, record, numTraining, redTeamName, blueTeamName,
-             muteAgents=False, catchExceptions=False):
+def runGames(layouts, agents, display, length, numGames, catchExceptions=False):
     rules = CaptureRules()
     games = []
 
-    if numTraining > 0:
-        print("Playing %d training games" % numTraining)
-
     for i in range(numGames):
-        beQuiet = i < numTraining
         layout = layouts[i]
-        if beQuiet:
-            # Suppress output and graphics
-            import textDisplay
-            gameDisplay = textDisplay.NullGraphics()
-            rules.quiet = True
-        else:
-            gameDisplay = display
-            rules.quiet = False
-        g = rules.newGame(layout, agents, gameDisplay, length, muteAgents, catchExceptions)
+        gameDisplay = display
+        rules.quiet = False
+        g = rules.newGame(layout, agents, gameDisplay, length, catchExceptions)
         g.run()
-        if not beQuiet: games.append(g)
-
-        g.record = None
-        if record:
-            import cPickle, game
-            # fname = ('recorded-game-%d' % (i + 1)) +  '-'.join([str(t) for t in time.localtime()[1:6]])
-            # f = file(fname, 'w')
-            components = {'layout': layout, 'agents': [game.Agent() for a in agents], 'actions': g.moveHistory,
-                          'length': length, 'redTeamName': redTeamName, 'blueTeamName': blueTeamName}
-            # f.close()
-            print("recorded")
-            g.record = cPickle.dumps(components)
-            with open('replay-%d' % i, 'wb') as f:
-                f.write(g.record)
+        games.append(g)
 
     if numGames > 1:
         scores = [game.state.data.score for game in games]
@@ -1059,6 +807,7 @@ def runGames(layouts, agents, display, length, numGames, record, numTraining, re
         print('Red Win Rate:  %d/%d (%.2f)' % ([s > 0 for s in scores].count(True), len(scores), redWinRate))
         print('Blue Win Rate: %d/%d (%.2f)' % ([s < 0 for s in scores].count(True), len(scores), blueWinRate))
         print('Record:       ', ', '.join([('Blue', 'Tie', 'Red')[max(0, min(2, 1 + s))] for s in scores]))
+
     return games
 
 
@@ -1068,20 +817,9 @@ def save_score(game):
 
 
 if __name__ == '__main__':
-    multiprocessing.freeze_support()
-    """
-  The main function called when pacman.py is run
-  from the command line:
+    multiprocessing.freeze_support()  # needed for windows with pyinstaller
 
-  > python capture.py
-
-  See the usage string for more details.
-
-  > python capture.py --help
-  """
     options = readCommand(sys.argv[1:])  # Get game components based on input
     games = runGames(**options)
 
     save_score(games[0])
-    # import cProfile
-    # cProfile.run('runGames( **options )', 'profile')
