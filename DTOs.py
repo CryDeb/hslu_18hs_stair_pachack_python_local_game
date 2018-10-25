@@ -33,12 +33,19 @@ class PublicGameState:
         else:
             layout = gameState.data.layout
             height, width = layout.height, layout.width
-            self.gameField = [[PublicFields.WALL if layout.walls[x][y] else PublicFields.EMPTY for x in range(width)]
-                              for y in range(height)]
+            self.gameField = [[PublicFields.EMPTY for x in range(width)] for y in range(height)]
+            for x in range(height):
+                for y in range(width):
+                    if layout.walls[y][x]:
+                        self.gameField[x][y] = PublicFields.WALL
+                    elif layout.food[y][x]:
+                        self.gameField[x][y] = PublicFields.FOOD
             for agent in gameState.data.agentStates[:]:
+                asdf = (agent.scaredTimer > 0)
                 self.publicPlayers.append(PublicPlayer(isPacman=agent.isPacman,
                                                        direction=agent.getDirection(),
-                                                       position=agent.getPosition()))
+                                                       position=agent.getPosition(),
+                                                       activeCapsule=asdf))
 
     def _create_self_from_json(self, jsonString):
         loadedJsonString = json.loads(jsonString)
@@ -76,10 +83,11 @@ class PublicGameState:
 
 
 class PublicPlayer:
-    def __init__(self, isPacman=True, direction=Directions.NORTH, position=[0, 0], jsonString=None):
+    def __init__(self, isPacman=True, direction=Directions.NORTH, position=[0, 0], jsonString=None, activeCapsule=False):
         self.isPacman = isPacman
         self.direction = direction
         self.position = position
+        self.activeCapsule = activeCapsule
         if (jsonString != None):
             self.__dict__ = jsonString
 
@@ -101,5 +109,6 @@ class PublicPlayer:
 class PublicFields:
     EMPTY = " "
     WALL = "%"
+    FOOD = "°"
     PLAYER = "P"
 

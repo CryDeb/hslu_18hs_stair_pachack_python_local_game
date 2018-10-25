@@ -621,13 +621,14 @@ class Game:
             self.mute(agentIndex)
             gameStateDTO = PublicGameState(self.state.deepCopy())
             myFutureResults = pool.map_async(choose_action, [(x, gameStateDTO, self.agents[x].ip_address) for x in range(numAgents)])
-            myResults = myFutureResults.get(10)
+            myResults = myFutureResults.get(0.8)
+            print(myResults)
             for myResult in myResults:
                 agentIndex = myResult[0]
                 try:
                     action = json.loads(myResult[1])
                 except Exception as dat:
-                    print("Have to choose a random action")
+                    print("Have to choose a random action for agent %d" %agentIndex)
                     action = random.choice(self.state.getLegalActions(agentIndex))
                 # Execute the action
                 self.moveHistory.append((agentIndex, action))

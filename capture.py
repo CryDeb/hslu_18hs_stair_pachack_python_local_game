@@ -789,6 +789,7 @@ def loadAgents(isRed, addresses=[]):
     indices = [2 * i + indexAddend for i in range(numOfAgents)]
     return createTeamFunc(indices, **args)
 
+
 def runGames(layouts, agents, display, length, numGames, catchExceptions=False):
     rules = CaptureRules()
     games = []
