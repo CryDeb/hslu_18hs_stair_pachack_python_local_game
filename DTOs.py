@@ -41,11 +41,11 @@ class PublicGameState:
                     elif layout.food[y][x]:
                         self.gameField[x][y] = PublicFields.FOOD
             for agent in gameState.data.agentStates[:]:
-                asdf = (agent.scaredTimer > 0)
+                weakened = (agent.scaredTimer > 0)
                 self.publicPlayers.append(PublicPlayer(isPacman=agent.isPacman,
                                                        direction=agent.getDirection(),
                                                        position=agent.getPosition(),
-                                                       activeCapsule=asdf))
+                                                       weakened=weakened))
 
     def _create_self_from_json(self, jsonString):
         loadedJsonString = json.loads(jsonString)
@@ -83,11 +83,11 @@ class PublicGameState:
 
 
 class PublicPlayer:
-    def __init__(self, isPacman=True, direction=Directions.NORTH, position=[0, 0], jsonString=None, activeCapsule=False):
+    def __init__(self, isPacman=True, direction=Directions.NORTH, position=[0, 0], jsonString=None, weakened=False):
         self.isPacman = isPacman
         self.direction = direction
         self.position = position
-        self.activeCapsule = activeCapsule
+        self.weakened = weakened
         if (jsonString != None):
             self.__dict__ = jsonString
 

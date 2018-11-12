@@ -528,7 +528,7 @@ def choose_action(arguments):
     publicGameState = arguments[1]
     website = str(arguments[2])
     result = requests.post(str(website+"/chooseAction"), headers={'Content-type': "application/json"},
-                           data=str(publicGameState))
+                           data=str(publicGameState), timeout=0.5)
     return (agent_id, result.content)
 
 
@@ -620,9 +620,14 @@ class Game:
             action = None
             self.mute(agentIndex)
             gameStateDTO = PublicGameState(self.state.deepCopy())
-            myFutureResults = pool.map_async(choose_action, [(x, gameStateDTO, self.agents[x].ip_address) for x in range(numAgents)])
-            myResults = myFutureResults.get(0.8)
-            print(myResults)
+            myFutureResults = pool.imap_unordered(choose_action, [(x, gameStateDTO, self.agents[x].ip_address) for x in range(numAgents)])
+            myResults = []
+            for agentIndex in range(numAgents):
+                try:
+                    myResults.append(myFutureResults.next(1))
+                except Exception as e:
+                    print("Agent %d reached timeout" % agentIndex)
+                    myResults.append((agentIndex, json.dumps(random.choice(self.state.getLegalActions(agentIndex)))))
             for myResult in myResults:
                 agentIndex = myResult[0]
                 try:
