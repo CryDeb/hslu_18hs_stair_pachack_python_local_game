@@ -32,7 +32,7 @@ class PublicGameState:
             self._create_self_from_json(jsonString)
         else:
             layout = gameState.data.layout
-            food = gameState.food
+            food = gameState.data.food
             height, width = layout.height, layout.width
             self.gameField = [[PublicFields.EMPTY for x in range(width)] for y in range(height)]
             for x in range(height):
