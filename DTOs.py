@@ -32,13 +32,14 @@ class PublicGameState:
             self._create_self_from_json(jsonString)
         else:
             layout = gameState.data.layout
+            food = gameState.food
             height, width = layout.height, layout.width
             self.gameField = [[PublicFields.EMPTY for x in range(width)] for y in range(height)]
             for x in range(height):
                 for y in range(width):
                     if layout.walls[y][x]:
                         self.gameField[x][y] = PublicFields.WALL
-                    elif layout.food[y][x]:
+                    elif food[y][x]:
                         self.gameField[x][y] = PublicFields.FOOD
             for agent in gameState.data.agentStates[:]:
                 weakened = (agent.scaredTimer > 0)
