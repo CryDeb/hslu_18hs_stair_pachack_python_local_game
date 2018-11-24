@@ -33,6 +33,7 @@ class PublicGameState:
         else:
             layout = gameState.data.layout
             food = gameState.data.food
+            capsules = gameState.data.capsules
             height, width = layout.height, layout.width
             self.gameField = [[PublicFields.EMPTY for x in range(width)] for y in range(height)]
             for x in range(height):
@@ -41,6 +42,9 @@ class PublicGameState:
                         self.gameField[x][y] = PublicFields.WALL
                     elif food[y][x]:
                         self.gameField[x][y] = PublicFields.FOOD
+            for idx, val in enumerate(capsules):
+                self.gameField[val[1]][val[0]] = PublicFields.CAPSULE
+            print(self.gameField)
             for agent in gameState.data.agentStates[:]:
                 weakened = (agent.scaredTimer > 0)
                 self.publicPlayers.append(PublicPlayer(isPacman=agent.isPacman,
@@ -111,5 +115,6 @@ class PublicFields:
     EMPTY = " "
     WALL = "%"
     FOOD = "°"
+    CAPSULE = "o"
     PLAYER = "P"
 
