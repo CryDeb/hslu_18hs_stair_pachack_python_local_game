@@ -680,7 +680,7 @@ class Game:
         if score == 0:
             messagebox.showinfo("No Winner", "There is no Winner")
         if score > 0:
-            messagebox.showinfo("Red Wins", "Team Blue wins with score: " + str(score))
+            messagebox.showinfo("Red Wins", "Team Red wins with score: " + str(score))
         if score < 0:
             messagebox.showinfo("Blue Wins", "Team Blue wins with score: " + str(score * -1))
         self.display.finish()
