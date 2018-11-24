@@ -44,7 +44,6 @@ class PublicGameState:
                         self.gameField[x][y] = PublicFields.FOOD
             for idx, val in enumerate(capsules):
                 self.gameField[val[1]][val[0]] = PublicFields.CAPSULE
-            print(self.gameField)
             for agent in gameState.data.agentStates[:]:
                 weakened = (agent.scaredTimer > 0)
                 self.publicPlayers.append(PublicPlayer(isPacman=agent.isPacman,

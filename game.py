@@ -527,6 +527,7 @@ def choose_action(arguments):
     agent_id = arguments[0]
     publicGameState = arguments[1]
     website = str(arguments[2])
+    publicGameState.agent_id = agent_id
     result = requests.post(str(website+"/chooseAction"), headers={'Content-type': "application/json"},
                            data=str(publicGameState), timeout=0.5)
     return (agent_id, result.content)
