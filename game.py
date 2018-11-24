@@ -688,7 +688,7 @@ class Game:
     def inform_agent_about_start(self):
         for agent in self.agents:
             result = requests.post(str(agent.ip_address + "/start"), headers={'Content-type': "text/plain"},
-                                   data=str(""))
+                                   data=str(agent.index))
             if(result.text != ""):
                 if(agent.index in self.state.getRedTeamIndices()):
                     self.display.redTeam = result.text
